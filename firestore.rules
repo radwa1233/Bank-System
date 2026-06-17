@@ -1,0 +1,57 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ---- helpers ----
+    function signedIn() {
+      return request.auth != null;
+    }
+    function myProfile() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+    function isStaff() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && myProfile().role in ['admin', 'employee'];
+    }
+    function isAdmin() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && myProfile().role == 'admin';
+    }
+
+    // ---- users (login profiles) ----
+    match /users/{uid} {
+      // a user can read their own profile; staff can read anyone
+      allow read: if signedIn() && (request.auth.uid == uid || isStaff());
+      // self-registration: a person may create ONLY their own doc, only as a customer
+      allow create: if signedIn()
+        && request.auth.uid == uid
+        && request.resource.data.role == 'customer';
+      // a user can edit their own non-role fields; admins can edit anyone
+      allow update: if signedIn() && (request.auth.uid == uid || isAdmin());
+      allow delete: if isAdmin();
+    }
+
+    // ---- bank accounts ----
+    match /accounts/{id} {
+      // staff see all; a customer sees only accounts they own
+      allow read: if isStaff() || (signedIn() && resource.data.ownerUid == request.auth.uid);
+      // only staff create / edit / delete accounts
+      allow create, update, delete: if isStaff();
+    }
+
+    // ---- transactions ----
+    match /transactions/{id} {
+      allow read: if signedIn();   // staff dashboards + customers filter client-side
+      allow create: if isStaff();  // only staff perform deposits/withdrawals/transfers
+      allow update, delete: if false; // transactions are immutable
+    }
+
+    // ---- currencies (read-only reference data) ----
+    match /currencies/{id} {
+      allow read: if signedIn();
+      allow write: if isAdmin();
+    }
+  }
+}

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NOVA BANK - Clients</title>
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="stylesheet" href="bankSystem.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+<div class="app-shell">
+
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-brand-icon">NB</div>
+      <div class="sidebar-brand-text">
+        <div class="brand-main">NOVA BANK</div>
+        <div class="brand-sub">Your Trust, Our Commitment</div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Main</div>
+      <a href="dashboard.html" class="nav-item"><i class="fa fa-house"></i> Dashboard</a>
+      <a href="clients.html" class="nav-item active"><i class="fa fa-users"></i> Clients</a>
+      <a href="transactions.html" class="nav-item"><i class="fa fa-right-left"></i> Transactions</a>
+      <a href="users.html" class="nav-item"><i class="fa fa-user"></i> Users</a>
+      <div class="nav-section-label">Tools</div>
+      <a href="currency.html" class="nav-item"><i class="fa fa-money-bill-transfer"></i> Currency Exchange</a>
+      <a href="reports.html" class="nav-item"><i class="fa fa-chart-line"></i> Reports</a>
+      <a href="settings.html" class="nav-item"><i class="fa fa-gear"></i> Settings</a>
+      <a href="loginPage.html" class="nav-item" id="logoutLink"><i class="fa fa-right-from-bracket"></i> Logout</a>
+    </nav>
+    <div class="sidebar-user">
+      <div class="sidebar-user-avatar" id="sbAvatar">··</div>
+      <div class="sidebar-user-info">
+        <div class="user-name" id="sbName">Loading...</div>
+        <div class="user-role" id="sbRole">—</div>
+      </div>
+    </div>
+  </aside>
+
+  <header class="topbar">
+    <div class="topbar-title">Cli<span>ents</span></div>
+    <div class="topbar-search">
+      <i class="fa fa-magnifying-glass"></i>
+      <input type="text" id="searchBox" placeholder="Search clients...">
+    </div>
+    <div class="topbar-actions">
+      <button class="topbar-btn"><i class="fa fa-bell"></i><span class="dot"></span></button>
+      <button class="topbar-btn"><i class="fa fa-envelope"></i></button>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <div class="page-header">
+      <div class="page-header-left">
+        <h2>Clients</h2>
+        <p>Manage all bank clients and their accounts.</p>
+      </div>
+      <button class="btn btn-primary" onclick="document.getElementById('clientModal').classList.add('open')">
+        <i class="fa fa-plus"></i> Add Client
+      </button>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">All Clients</div>
+        <span class="badge gold" id="clientCount">0 clients</span>
+      </div>
+      <div class="card-body">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>ID</th><th>Client Name</th><th>Account No.</th><th>Balance</th><th>Status</th><th>Actions</th></tr>
+            </thead>
+            <tbody id="clientsBody">
+              <tr><td colspan="6" style="text-align:center;color:var(--gray-500);padding:24px">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
+</div>
+
+<!-- ADD CLIENT MODAL -->
+<div class="modal-overlay" id="clientModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Add New Client</div>
+      <span class="modal-close" onclick="document.getElementById('clientModal').classList.remove('open')"><i class="fa fa-xmark"></i></span>
+    </div>
+    <div class="modal-body">
+      <div class="grid-2" style="margin-bottom:0">
+        <div class="form-group">
+          <label class="form-label">First Name</label>
+          <input class="form-control" type="text" id="m_firstName" placeholder="First name">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Last Name</label>
+          <input class="form-control" type="text" id="m_lastName" placeholder="Last name">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <div class="form-control-icon">
+          <i class="fa fa-envelope"></i>
+          <input class="form-control" type="email" id="m_email" placeholder="email@mail.com">
+        </div>
+      </div>
+      <div class="grid-2" style="margin-bottom:0">
+        <div class="form-group">
+          <label class="form-label">Phone</label>
+          <input class="form-control" type="text" id="m_phone" placeholder="01000000000">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Account Number</label>
+          <input class="form-control" type="text" id="m_account" placeholder="A00">
+        </div>
+      </div>
+      <div class="grid-2" style="margin-bottom:0">
+        <div class="form-group">
+          <label class="form-label">Account Type</label>
+          <select class="form-control" id="m_type">
+            <option value="Savings">Savings</option>
+            <option value="Current">Current</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Initial Balance</label>
+          <input class="form-control" type="number" id="m_balance" placeholder="0.00">
+        </div>
+      </div>
+      <div class="form-group" style="margin-bottom:0">
+        <label class="form-label">Link to Customer Login (optional)</label>
+        <div class="form-control-icon">
+          <i class="fa fa-link"></i>
+          <input class="form-control" type="email" id="m_ownerEmail" placeholder="customer@mail.com — leave empty if none">
+        </div>
+        <div class="setting-sub" style="margin-top:6px">If the customer already registered, enter their email so the account shows in their login.</div>
+      </div>
+      <div id="m_error" style="display:none;color:var(--red);font-size:13px;margin-top:6px;"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="document.getElementById('clientModal').classList.remove('open')">Cancel</button>
+      <button class="btn btn-gold" id="saveClientBtn">Save Client</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { guard, logout } from "./auth.js";
+import { db, COL, ROLES } from "./firebase-config.js";
+import {
+  collection, getDocs, addDoc, deleteDoc, doc, query, where, serverTimestamp,
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const $ = id => document.getElementById(id);
+const fmt = n => '$' + Number(n || 0).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+const initials = (f, l) => ((f?.[0]||'') + (l?.[0]||'')).toUpperCase();
+
+let currentUser = null;
+let allAccounts = [];
+
+guard([ROLES.ADMIN, ROLES.EMPLOYEE]).then(profile => {
+  currentUser = profile;
+  $('sbName').textContent = (profile.firstName + ' ' + profile.lastName).trim();
+  $('sbAvatar').textContent = initials(profile.firstName, profile.lastName);
+  $('sbRole').textContent = profile.role === ROLES.ADMIN ? 'Admin' : 'Employee';
+  $('logoutLink').addEventListener('click', async e => {
+    e.preventDefault(); await logout(); window.location.href = 'loginPage.html';
+  });
+  $('searchBox').addEventListener('input', applyFilter);
+  loadAccounts();
+});
+
+function applyFilter() {
+  const q = $('searchBox').value.trim().toLowerCase();
+  const list = !q ? allAccounts : allAccounts.filter(a =>
+    `${a.firstName||''} ${a.lastName||''}`.toLowerCase().includes(q) ||
+    (a.email||'').toLowerCase().includes(q) ||
+    (a.accountNumber||'').toLowerCase().includes(q) ||
+    (a.accountType||'').toLowerCase().includes(q));
+  render(list);
+}
+
+function render(accounts) {
+  const body = $('clientsBody');
+  if (!accounts.length) {
+    body.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--gray-500);padding:24px">No matching accounts.</td></tr>';
+    return;
+  }
+  body.innerHTML = accounts.map((a, i) => `
+    <tr>
+      <td>${i + 1}</td>
+      <td><div class="client-cell"><span class="client-avatar">${initials(a.firstName, a.lastName)}</span>
+          <div><div class="client-name">${a.firstName || ''} ${a.lastName || ''}</div>
+          <div class="client-email">${a.email || a.accountType || ''}</div></div></div></td>
+      <td class="acc-num">${a.accountNumber}</td>
+      <td class="balance-cell">${fmt(a.balance)}</td>
+      <td><span class="badge ${a.balance > 0 ? 'active' : 'pending'}">${a.accountType || 'Account'}</span></td>
+      <td class="actions-cell">
+        <button class="btn-icon del" title="Delete" data-id="${a.id}" data-acc="${a.accountNumber}"><i class="fa fa-trash"></i></button>
+      </td>
+    </tr>`).join('');
+
+  body.querySelectorAll('.btn-icon.del').forEach(btn => {
+    btn.addEventListener('click', () => deleteAccount(btn.dataset.id, btn.dataset.acc));
+  });
+}
+
+async function loadAccounts() {
+  const body = $('clientsBody');
+  try {
+    const snap = await getDocs(collection(db, COL.ACCOUNTS));
+    allAccounts = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    $('clientCount').textContent = allAccounts.length + ' account(s)';
+    if (!allAccounts.length) {
+      body.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--gray-500);padding:24px">No accounts yet. Add one with the button above.</td></tr>';
+      return;
+    }
+    applyFilter();
+  } catch (e) {
+    body.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--red);padding:24px">Error loading: ' + e.message + '</td></tr>';
+  }
+}
+
+async function saveClient() {
+  const err = $('m_error');
+  err.style.display = 'none';
+  const acc = $('m_account').value.trim();
+  if (!acc) { err.textContent = 'Account number is required'; err.style.display = 'block'; return; }
+
+  try {
+    // unique account number check
+    const existing = await getDocs(query(collection(db, COL.ACCOUNTS), where('accountNumber', '==', acc)));
+    if (!existing.empty) { err.textContent = 'Account number already exists'; err.style.display = 'block'; return; }
+
+    // optional: link to a registered customer by email
+    let ownerUid = null;
+    const ownerEmail = $('m_ownerEmail').value.trim().toLowerCase();
+    if (ownerEmail) {
+      const owner = await getDocs(query(collection(db, COL.USERS),
+        where('email', '==', ownerEmail), where('role', '==', ROLES.CUSTOMER)));
+      if (owner.empty) { err.textContent = 'No registered customer with this email'; err.style.display = 'block'; return; }
+      ownerUid = owner.docs[0].id;
+    }
+
+    await addDoc(collection(db, COL.ACCOUNTS), {
+      firstName: $('m_firstName').value.trim(),
+      lastName: $('m_lastName').value.trim(),
+      email: $('m_email').value.trim(),
+      phone: $('m_phone').value.trim(),
+      accountNumber: acc,
+      accountType: $('m_type').value,
+      balance: Number($('m_balance').value || 0),
+      status: 'active',
+      ownerUid: ownerUid,
+      createdBy: currentUser.uid,
+      createdAt: serverTimestamp(),
+    });
+
+    $('clientModal').classList.remove('open');
+    ['m_firstName','m_lastName','m_email','m_phone','m_account','m_balance','m_ownerEmail'].forEach(id => $(id).value = '');
+    loadAccounts();
+  } catch (e) {
+    err.textContent = e.message; err.style.display = 'block';
+  }
+}
+
+async function deleteAccount(id, acc) {
+  if (!confirm('Delete account ' + acc + '?')) return;
+  await deleteDoc(doc(db, COL.ACCOUNTS, id));
+  loadAccounts();
+}
+
+$('saveClientBtn').addEventListener('click', saveClient);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NOVA BANK - Create Account</title>
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="stylesheet" href="bankSystem.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+
+  <div class="login-page">
+
+    <div class="login-visual">
+      <div class="login-visual-logo">
+        <div class="brand-logo-card">
+          <span class="logo-star-glow"></span>
+          <img src="logo.png" alt="NOVA BANK">
+        </div>
+      </div>
+      <div class="login-stats">
+        <div class="login-stat">
+          <div class="stat-val"><i class="fa fa-shield-halved"></i></div>
+          <div class="stat-label">Secure</div>
+        </div>
+        <div class="login-stat">
+          <div class="stat-val"><i class="fa fa-bolt"></i></div>
+          <div class="stat-label">Instant</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="login-form-side">
+      <div class="login-form-box">
+        <h2>Create Account</h2>
+        <p>Open your NOVA BANK customer account</p>
+
+        <div class="grid-2" style="margin-bottom:0">
+          <div class="form-group">
+            <label class="form-label">First Name</label>
+            <input class="form-control" type="text" id="firstName" placeholder="First name">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Last Name</label>
+            <input class="form-control" type="text" id="lastName" placeholder="Last name">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <div class="form-control-icon">
+            <i class="fa fa-envelope"></i>
+            <input class="form-control" type="email" id="email" placeholder="email@mail.com">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Phone</label>
+          <div class="form-control-icon">
+            <i class="fa fa-phone"></i>
+            <input class="form-control" type="text" id="phone" placeholder="01xxxxxxxxx">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <div class="form-control-icon">
+            <i class="fa fa-lock"></i>
+            <input class="form-control" type="password" id="password" placeholder="At least 6 characters">
+          </div>
+        </div>
+
+        <div id="msg" style="display:none;font-size:13px;margin-bottom:14px;"></div>
+
+        <button class="btn btn-primary btn-block" id="registerBtn">Create Account</button>
+
+        <p style="text-align:center;margin-top:18px;font-size:13px;">
+          Already have an account?
+          <a href="loginPage.html" style="color:var(--gold-dark);font-weight:600;">Login</a>
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+  <script type="module">
+    import { registerCustomer, homeFor } from "./auth.js";
+
+    const btn = document.getElementById('registerBtn');
+    const msg = document.getElementById('msg');
+
+    function showMsg(text, isError = true) {
+      msg.textContent = text;
+      msg.style.color = isError ? 'var(--red)' : 'var(--green)';
+      msg.style.display = 'block';
+    }
+
+    async function doRegister() {
+      const firstName = document.getElementById('firstName').value.trim();
+      const lastName = document.getElementById('lastName').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const password = document.getElementById('password').value;
+
+      msg.style.display = 'none';
+
+      if (!firstName || !lastName || !email || !password) {
+        showMsg('Please fill in name, email and password.');
+        return;
+      }
+      if (password.length < 6) {
+        showMsg('Password must be at least 6 characters.');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Creating...';
+      try {
+        const profile = await registerCustomer({ firstName, lastName, email, phone, password });
+        showMsg('Account created! Redirecting...', false);
+        setTimeout(() => window.location.href = homeFor(profile.role), 900);
+      } catch (e) {
+        let text = e.message || 'Could not create account.';
+        if (e.code === 'auth/email-already-in-use') text = 'This email is already registered.';
+        if (e.code === 'auth/invalid-email') text = 'Invalid email address.';
+        if (e.code === 'auth/weak-password') text = 'Password is too weak (min 6 characters).';
+        showMsg(text);
+        btn.disabled = false;
+        btn.textContent = 'Create Account';
+      }
+    }
+
+    btn.addEventListener('click', doRegister);
+    document.getElementById('password').addEventListener('keydown', e => {
+      if (e.key === 'Enter') doRegister();
+    });
+  </script>
+
+</body>
+
+</html>

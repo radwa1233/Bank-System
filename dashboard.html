@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NOVA BANK - Dashboard</title>
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="stylesheet" href="bankSystem.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+<div class="app-shell">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-brand-icon">NB</div>
+      <div class="sidebar-brand-text">
+        <div class="brand-main">NOVA BANK</div>
+        <div class="brand-sub">Your Trust, Our Commitment</div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Main</div>
+      <a href="dashboard.html" class="nav-item active"><i class="fa fa-house"></i> Dashboard</a>
+      <a href="clients.html" class="nav-item"><i class="fa fa-users"></i> Clients</a>
+      <a href="transactions.html" class="nav-item"><i class="fa fa-right-left"></i> Transactions</a>
+      <a href="users.html" class="nav-item"><i class="fa fa-user"></i> Users</a>
+      <div class="nav-section-label">Tools</div>
+      <a href="currency.html" class="nav-item"><i class="fa fa-money-bill-transfer"></i> Currency Exchange</a>
+      <a href="reports.html" class="nav-item"><i class="fa fa-chart-line"></i> Reports</a>
+      <a href="settings.html" class="nav-item"><i class="fa fa-gear"></i> Settings</a>
+      <a href="loginPage.html" class="nav-item" id="logoutLink"><i class="fa fa-right-from-bracket"></i> Logout</a>
+    </nav>
+    <div class="sidebar-user">
+      <div class="sidebar-user-avatar" id="sbAvatar">··</div>
+      <div class="sidebar-user-info">
+        <div class="user-name" id="sbName">Loading...</div>
+        <div class="user-role" id="sbRole">—</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="topbar-title">Dash<span>board</span></div>
+    <div class="topbar-search">
+      <i class="fa fa-magnifying-glass"></i>
+      <input type="text" placeholder="Search...">
+    </div>
+    <div class="topbar-actions">
+      <button class="topbar-btn"><i class="fa fa-bell"></i><span class="dot"></span></button>
+      <button class="topbar-btn"><i class="fa fa-envelope"></i></button>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main class="main-content">
+    <!-- Welcome -->
+    <div class="welcome-header">
+      <div class="welcome-text">
+        <h2>Welcome back, <span id="welcomeName">there</span> 👋</h2>
+        <p>Here's what's happening with your bank today.</p>
+      </div>
+      <div class="welcome-meta">
+        <div class="welcome-date">
+          <div class="date-val" id="todayDate">—</div>
+          <div class="date-label">Today</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stat cards -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon navy"><i class="fa fa-users"></i></div>
+        <div class="stat-label">Total Clients</div>
+        <div class="stat-value" id="statClients">—</div>
+        <div class="stat-change up"><i class="fa fa-users"></i> Registered clients</div>
+      </div>
+      <div class="stat-card featured">
+        <div class="stat-icon gold"><i class="fa fa-dollar-sign"></i></div>
+        <div class="stat-label">Total Balance</div>
+        <div class="stat-value" id="statBalance">—</div>
+        <div class="stat-change"><i class="fa fa-dollar-sign"></i> Across all accounts</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon blue"><i class="fa fa-right-left"></i></div>
+        <div class="stat-label">Total Transfers</div>
+        <div class="stat-value" id="statTransfers">—</div>
+        <div class="stat-change up"><i class="fa fa-right-left"></i> Logged transfers</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon gold"><i class="fa fa-user-check"></i></div>
+        <div class="stat-label">System Users</div>
+        <div class="stat-value" id="statUsers">—</div>
+        <div class="stat-change up"><i class="fa fa-user-check"></i> Active users</div>
+      </div>
+    </div>
+
+    <!-- Chart + Quick actions -->
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Transactions Overview</div>
+            <div class="card-subtitle">Last 7 months</div>
+          </div>
+          <span class="badge gold">2024</span>
+        </div>
+        <div class="card-body">
+          <div class="chart-area">
+            <div class="chart-bar-wrap"><div class="chart-bar" style="height:45%"></div><span class="chart-bar-label">Jan</span></div>
+            <div class="chart-bar-wrap"><div class="chart-bar" style="height:70%"></div><span class="chart-bar-label">Feb</span></div>
+            <div class="chart-bar-wrap"><div class="chart-bar navy" style="height:55%"></div><span class="chart-bar-label">Mar</span></div>
+            <div class="chart-bar-wrap"><div class="chart-bar" style="height:85%"></div><span class="chart-bar-label">Apr</span></div>
+            <div class="chart-bar-wrap"><div class="chart-bar navy" style="height:60%"></div><span class="chart-bar-label">May</span></div>
+            <div class="chart-bar-wrap"><div class="chart-bar" style="height:95%"></div><span class="chart-bar-label">Jun</span></div>
+            <div class="chart-bar-wrap"><div class="chart-bar navy" style="height:75%"></div><span class="chart-bar-label">Jul</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">Quick Actions</div></div>
+        <div class="card-body">
+          <div class="quick-actions">
+            <a href="clients.html" class="quick-action"><i class="fa fa-user-plus"></i><span>Add Client</span></a>
+            <a href="transactions.html" class="quick-action"><i class="fa fa-money-bill-wave"></i><span>Deposit</span></a>
+            <a href="transactions.html" class="quick-action"><i class="fa fa-right-left"></i><span>Transfer</span></a>
+            <a href="currency.html" class="quick-action"><i class="fa fa-calculator"></i><span>Exchange</span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent transactions + clients -->
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Recent Transactions</div>
+          <a href="transactions.html" class="badge info">View all</a>
+        </div>
+        <div class="card-body">
+          <div class="tx-list" id="recentTxList">
+            <div style="text-align:center;color:var(--gray-500);padding:24px">Loading...</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Top Clients</div>
+          <a href="clients.html" class="badge info">View all</a>
+        </div>
+        <div class="card-body">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Client</th><th>Account</th><th>Balance</th></tr></thead>
+              <tbody id="topClientsBody">
+                <tr><td colspan="3" style="text-align:center;color:var(--gray-500);padding:24px">Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+</div>
+
+<script type="module">
+  import { guard, logout } from "./auth.js";
+  import { db, COL, ROLES } from "./firebase-config.js";
+  import { collection, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const $ = id => document.getElementById(id);
+  const initials = (f, l) => ((f?.[0]||'') + (l?.[0]||'')).toUpperCase();
+  const fmtMoney = n => '$' + Number(n||0).toLocaleString(undefined, { maximumFractionDigits: 0 });
+
+  guard([ROLES.ADMIN, ROLES.EMPLOYEE]).then(async (profile) => {
+    $('sbName').textContent = (profile.firstName + ' ' + profile.lastName).trim();
+    $('sbAvatar').textContent = initials(profile.firstName, profile.lastName);
+    $('sbRole').textContent = profile.role === ROLES.ADMIN ? 'Admin' : 'Employee';
+    $('welcomeName').textContent = profile.firstName || 'there';
+    $('todayDate').textContent = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    $('logoutLink').addEventListener('click', async e => {
+      e.preventDefault(); await logout(); window.location.href = 'loginPage.html';
+    });
+    loadDashboard();
+  });
+
+  async function loadDashboard() {
+    try {
+      const [accSnap, usrSnap, txSnap] = await Promise.all([
+        getDocs(collection(db, COL.ACCOUNTS)),
+        getDocs(collection(db, COL.USERS)),
+        getDocs(collection(db, COL.TX)),
+      ]);
+      const accounts = accSnap.docs.map(d => d.data());
+      const totalBalance = accounts.reduce((s, a) => s + Number(a.balance || 0), 0);
+
+      $('statClients').textContent = accounts.length.toLocaleString();
+      $('statBalance').textContent = '$' + totalBalance.toLocaleString(undefined, { maximumFractionDigits: 0 });
+      $('statTransfers').textContent = txSnap.size.toLocaleString();
+      $('statUsers').textContent = usrSnap.size.toLocaleString();
+
+      const top = [...accounts].sort((a, b) => Number(b.balance||0) - Number(a.balance||0)).slice(0, 5);
+      const body = $('topClientsBody');
+      if (!top.length) {
+        body.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--gray-500);padding:24px">No accounts yet</td></tr>';
+      } else {
+        body.innerHTML = top.map(c => {
+          const name = `${c.firstName || ''} ${c.lastName || ''}`.trim() || c.accountNumber;
+          const bal = '$' + Number(c.balance||0).toLocaleString(undefined, { maximumFractionDigits: 0 });
+          return `<tr>
+            <td><div class="client-cell"><span class="client-avatar">${initials(c.firstName, c.lastName)}</span>
+              <div><div class="client-name">${name}</div><div class="client-email">${c.accountNumber}</div></div></div></td>
+            <td class="acc-num">${c.accountNumber}</td>
+            <td class="balance-cell">${bal}</td></tr>`;
+        }).join('');
+      }
+
+      renderRecentTx(txSnap.docs.map(d => d.data()));
+    } catch (e) {
+      console.error('Dashboard load failed:', e);
+    }
+  }
+
+  function renderRecentTx(allTx) {
+    const list = $('recentTxList');
+    // newest first
+    allTx.sort((a, b) => {
+      const ta = a.createdAt?.toMillis ? a.createdAt.toMillis() : 0;
+      const tb = b.createdAt?.toMillis ? b.createdAt.toMillis() : 0;
+      return tb - ta;
+    });
+    const recent = allTx.slice(0, 5);
+    if (!recent.length) {
+      list.innerHTML = '<div style="text-align:center;color:var(--gray-500);padding:24px">No transactions yet</div>';
+      return;
+    }
+    list.innerHTML = recent.map(t => {
+      const type = t.type || 'deposit';
+      const icon = type === 'deposit' ? 'deposit' : (type === 'withdraw' ? 'withdraw' : 'transfer');
+      const arrow = type === 'deposit' ? 'fa-arrow-down' : (type === 'withdraw' ? 'fa-arrow-up' : 'fa-right-left');
+      const sign = type === 'deposit' ? '+' : '-';
+      const cls = type === 'deposit' ? 'plus' : 'minus';
+      const label = type.charAt(0).toUpperCase() + type.slice(1);
+      const who = type === 'transfer' ? `${t.fromAccount} → ${t.toAccount}` : t.fromAccount;
+      const when = t.createdAt?.toDate ? t.createdAt.toDate().toLocaleString() : '';
+      return `<div class="tx-item">
+        <div class="tx-icon ${icon}"><i class="fa ${arrow}"></i></div>
+        <div class="tx-info"><div class="tx-name">${label} · ${who}</div><div class="tx-date">${when}</div></div>
+        <div class="tx-amount ${cls}">${sign}${fmtMoney(t.amount)}</div>
+      </div>`;
+    }).join('');
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NOVA BANK - Settings</title>
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="stylesheet" href="bankSystem.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+<div class="app-shell">
+
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-brand-icon">NB</div>
+      <div class="sidebar-brand-text">
+        <div class="brand-main">NOVA BANK</div>
+        <div class="brand-sub">Your Trust, Our Commitment</div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Main</div>
+      <a href="dashboard.html" class="nav-item"><i class="fa fa-house"></i> Dashboard</a>
+      <a href="clients.html" class="nav-item"><i class="fa fa-users"></i> Clients</a>
+      <a href="transactions.html" class="nav-item"><i class="fa fa-right-left"></i> Transactions</a>
+      <a href="users.html" class="nav-item"><i class="fa fa-user"></i> Users</a>
+      <div class="nav-section-label">Tools</div>
+      <a href="currency.html" class="nav-item"><i class="fa fa-money-bill-transfer"></i> Currency Exchange</a>
+      <a href="reports.html" class="nav-item"><i class="fa fa-chart-line"></i> Reports</a>
+      <a href="settings.html" class="nav-item active"><i class="fa fa-gear"></i> Settings</a>
+      <a href="loginPage.html" class="nav-item" id="logoutLink"><i class="fa fa-right-from-bracket"></i> Logout</a>
+    </nav>
+    <div class="sidebar-user">
+      <div class="sidebar-user-avatar" id="sbAvatar">··</div>
+      <div class="sidebar-user-info">
+        <div class="user-name" id="sbName">Loading...</div>
+        <div class="user-role" id="sbRole">—</div>
+      </div>
+    </div>
+  </aside>
+
+  <header class="topbar">
+    <div class="topbar-title">Sett<span>ings</span></div>
+    <div class="topbar-search">
+      <i class="fa fa-magnifying-glass"></i>
+      <input type="text" placeholder="Search settings...">
+    </div>
+    <div class="topbar-actions">
+      <button class="topbar-btn"><i class="fa fa-bell"></i><span class="dot"></span></button>
+      <button class="topbar-btn"><i class="fa fa-envelope"></i></button>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <div class="page-header">
+      <div class="page-header-left">
+        <h2>Settings</h2>
+        <p>Manage your account and system preferences.</p>
+      </div>
+      <button class="btn btn-gold" id="saveProfileBtn"><i class="fa fa-floppy-disk"></i> Save Changes</button>
+    </div>
+
+    <div class="settings-grid">
+      <div class="settings-section">
+        <h3>Profile</h3>
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input class="form-control" type="text" id="pfFullName" value="">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <div class="form-control-icon">
+            <i class="fa fa-envelope"></i>
+            <input class="form-control" type="email" id="pfEmail" value="" readonly>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Role</label>
+          <input class="form-control" type="text" id="pfRole" value="" readonly>
+        </div>
+        <div id="profileMsg" style="display:none;font-size:13px;"></div>
+      </div>
+
+      <div class="settings-section">
+        <h3>Security</h3>
+        <div class="form-group">
+          <label class="form-label">Current Password</label>
+          <div class="form-control-icon">
+            <i class="fa fa-lock"></i>
+            <input class="form-control" type="password" id="curPass" placeholder="••••••••">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">New Password</label>
+          <div class="form-control-icon">
+            <i class="fa fa-key"></i>
+            <input class="form-control" type="password" id="newPass" placeholder="At least 6 characters">
+          </div>
+        </div>
+        <div id="passMsg" style="display:none;font-size:13px;margin-bottom:12px;"></div>
+        <button class="btn btn-outline btn-block" id="updatePassBtn">Update Password</button>
+      </div>
+
+      <div class="settings-section">
+        <h3>Preferences</h3>
+        <div class="setting-row">
+          <div><div class="setting-label">Email Notifications</div><div class="setting-sub">Get notified on new transactions</div></div>
+          <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+        </div>
+        <div class="setting-row">
+          <div><div class="setting-label">Two-Factor Auth</div><div class="setting-sub">Extra layer of security</div></div>
+          <div class="toggle" onclick="this.classList.toggle('on')"></div>
+        </div>
+        <div class="setting-row">
+          <div><div class="setting-label">Dark Mode</div><div class="setting-sub">Switch theme appearance</div></div>
+          <div class="toggle" onclick="this.classList.toggle('on')"></div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <h3>System</h3>
+        <div class="setting-row">
+          <div><div class="setting-label">Default Currency</div><div class="setting-sub">Base currency for the bank</div></div>
+          <span class="badge gold">USD</span>
+        </div>
+        <div class="setting-row">
+          <div><div class="setting-label">Database</div><div class="setting-sub">Cloud Firestore</div></div>
+          <span class="badge active">Connected</span>
+        </div>
+        <div class="setting-row">
+          <div><div class="setting-label">Authentication</div><div class="setting-sub">Firebase Auth</div></div>
+          <span class="badge active">Active</span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+</div>
+<script type="module">
+  import { guard, logout } from "./auth.js";
+  import { auth, db, COL, ROLES } from "./firebase-config.js";
+  import { doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import {
+    updatePassword, EmailAuthProvider, reauthenticateWithCredential,
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+  const $ = id => document.getElementById(id);
+  const initials = (f, l) => ((f?.[0]||'') + (l?.[0]||'')).toUpperCase();
+  let me = null;
+
+  function msg(el, text, ok) {
+    el.textContent = text;
+    el.style.color = ok ? 'var(--green)' : 'var(--red)';
+    el.style.display = 'block';
+  }
+
+  guard([ROLES.ADMIN, ROLES.EMPLOYEE]).then(profile => {
+    me = profile;
+    $('sbName').textContent = (profile.firstName + ' ' + profile.lastName).trim();
+    $('sbAvatar').textContent = initials(profile.firstName, profile.lastName);
+    $('sbRole').textContent = profile.role === ROLES.ADMIN ? 'Admin' : 'Employee';
+    $('logoutLink').addEventListener('click', async e => {
+      e.preventDefault(); await logout(); window.location.href = 'loginPage.html';
+    });
+
+    // fill real profile
+    $('pfFullName').value = (profile.firstName + ' ' + profile.lastName).trim();
+    $('pfEmail').value = profile.email || '';
+    $('pfRole').value = profile.role === ROLES.ADMIN ? 'Admin' : 'Employee';
+  });
+
+  // save name
+  $('saveProfileBtn').addEventListener('click', async () => {
+    const m = $('profileMsg');
+    const full = $('pfFullName').value.trim();
+    if (!full) { msg(m, 'Name cannot be empty', false); return; }
+    const parts = full.split(' ');
+    try {
+      await updateDoc(doc(db, COL.USERS, me.uid), {
+        firstName: parts[0], lastName: parts.slice(1).join(' '),
+      });
+      msg(m, 'Profile saved', true);
+      $('sbName').textContent = full;
+      $('sbAvatar').textContent = initials(parts[0], parts.slice(1).join(' '));
+    } catch (e) { msg(m, e.message, false); }
+  });
+
+  // change password (requires re-auth with current password)
+  $('updatePassBtn').addEventListener('click', async () => {
+    const m = $('passMsg');
+    const cur = $('curPass').value, neu = $('newPass').value;
+    if (!cur || !neu) { msg(m, 'Fill both password fields', false); return; }
+    if (neu.length < 6) { msg(m, 'New password must be at least 6 characters', false); return; }
+    try {
+      const cred = EmailAuthProvider.credential(auth.currentUser.email, cur);
+      await reauthenticateWithCredential(auth.currentUser, cred);
+      await updatePassword(auth.currentUser, neu);
+      msg(m, 'Password updated successfully', true);
+      $('curPass').value = ''; $('newPass').value = '';
+    } catch (e) {
+      msg(m, e.code && e.code.includes('wrong-password') || e.code?.includes('invalid-credential')
+        ? 'Current password is incorrect' : (e.message || 'Could not update password'), false);
+    }
+  });
+</script>
+</body>
+</html>

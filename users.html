@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NOVA BANK - Users</title>
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="stylesheet" href="bankSystem.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+<div class="app-shell">
+
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-brand-icon">NB</div>
+      <div class="sidebar-brand-text">
+        <div class="brand-main">NOVA BANK</div>
+        <div class="brand-sub">Your Trust, Our Commitment</div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Main</div>
+      <a href="dashboard.html" class="nav-item"><i class="fa fa-house"></i> Dashboard</a>
+      <a href="clients.html" class="nav-item"><i class="fa fa-users"></i> Clients</a>
+      <a href="transactions.html" class="nav-item"><i class="fa fa-right-left"></i> Transactions</a>
+      <a href="users.html" class="nav-item active"><i class="fa fa-user"></i> Users</a>
+      <div class="nav-section-label">Tools</div>
+      <a href="currency.html" class="nav-item"><i class="fa fa-money-bill-transfer"></i> Currency Exchange</a>
+      <a href="reports.html" class="nav-item"><i class="fa fa-chart-line"></i> Reports</a>
+      <a href="settings.html" class="nav-item"><i class="fa fa-gear"></i> Settings</a>
+      <a href="loginPage.html" class="nav-item" id="logoutLink"><i class="fa fa-right-from-bracket"></i> Logout</a>
+    </nav>
+    <div class="sidebar-user">
+      <div class="sidebar-user-avatar" id="sbAvatar">··</div>
+      <div class="sidebar-user-info">
+        <div class="user-name" id="sbName">Loading...</div>
+        <div class="user-role" id="sbRole">—</div>
+      </div>
+    </div>
+  </aside>
+
+  <header class="topbar">
+    <div class="topbar-title">Us<span>ers</span></div>
+    <div class="topbar-search">
+      <i class="fa fa-magnifying-glass"></i>
+      <input type="text" id="searchBox" placeholder="Search users...">
+    </div>
+    <div class="topbar-actions">
+      <button class="topbar-btn"><i class="fa fa-bell"></i><span class="dot"></span></button>
+      <button class="topbar-btn"><i class="fa fa-envelope"></i></button>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <div class="page-header">
+      <div class="page-header-left">
+        <h2>System Users</h2>
+        <p>Manage employees and their access permissions.</p>
+      </div>
+      <button class="btn btn-primary"><i class="fa fa-plus"></i> Add User</button>
+    </div>
+
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">All Users</div>
+          <span class="badge gold" id="userCount">0 users</span>
+        </div>
+        <div class="card-body">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>User</th><th>Full Name</th><th>Email</th><th>Role</th></tr></thead>
+              <tbody id="usersBody">
+                <tr><td colspan="4" style="text-align:center;color:var(--gray-500);padding:24px">Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="profile-card">
+          <div class="profile-avatar" id="pcAvatar">··</div>
+          <div class="profile-name" id="pcName">Loading...</div>
+          <div class="profile-role" id="pcRole">—</div>
+          <div class="profile-stats">
+            <div><div class="profile-stat-val" id="pcStaff">0</div><div class="profile-stat-label">Staff</div></div>
+            <div><div class="profile-stat-val" id="pcCustomers">0</div><div class="profile-stat-label">Customers</div></div>
+            <div><div class="profile-stat-val" id="pcAccounts">0</div><div class="profile-stat-label">Accounts</div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Permissions</div></div>
+          <div class="card-body">
+            <div class="perm-grid">
+              <label class="perm-item checked"><input type="checkbox" checked><span>View</span></label>
+              <label class="perm-item checked"><input type="checkbox" checked><span>Create</span></label>
+              <label class="perm-item checked"><input type="checkbox" checked><span>Edit</span></label>
+              <label class="perm-item checked"><input type="checkbox" checked><span>Delete</span></label>
+              <label class="perm-item checked"><input type="checkbox" checked><span>Reports</span></label>
+              <label class="perm-item"><input type="checkbox"><span>Settings</span></label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+</div>
+
+<script type="module">
+  import { guard, logout } from "./auth.js";
+  import { db, COL, ROLES } from "./firebase-config.js";
+  import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const $ = id => document.getElementById(id);
+  const initials = (f, l) => ((f?.[0]||'') + (l?.[0]||'')).toUpperCase();
+
+  function roleBadge(role) {
+    if (role === ROLES.ADMIN)    return '<span class="badge gold">Admin</span>';
+    if (role === ROLES.EMPLOYEE) return '<span class="badge info">Employee</span>';
+    if (role === ROLES.CUSTOMER) return '<span class="badge active">Customer</span>';
+    return '<span class="badge inactive">' + (role || 'unknown') + '</span>';
+  }
+
+  let allUsers = [];
+
+  guard([ROLES.ADMIN, ROLES.EMPLOYEE]).then(profile => {
+    $('sbName').textContent = (profile.firstName + ' ' + profile.lastName).trim();
+    $('sbAvatar').textContent = initials(profile.firstName, profile.lastName);
+    $('sbRole').textContent = profile.role === ROLES.ADMIN ? 'Admin' : 'Employee';
+    $('logoutLink').addEventListener('click', async e => {
+      e.preventDefault(); await logout(); window.location.href = 'loginPage.html';
+    });
+
+    // profile card shows the logged-in user
+    $('pcName').textContent = (profile.firstName + ' ' + profile.lastName).trim();
+    $('pcAvatar').textContent = initials(profile.firstName, profile.lastName);
+    $('pcRole').textContent = profile.role === ROLES.ADMIN ? 'Administrator' : 'Employee';
+
+    $('searchBox').addEventListener('input', applyFilter);
+    loadUsers();
+  });
+
+  function applyFilter() {
+    const q = $('searchBox').value.trim().toLowerCase();
+    const list = !q ? allUsers : allUsers.filter(u =>
+      `${u.firstName||''} ${u.lastName||''}`.toLowerCase().includes(q) ||
+      (u.email||'').toLowerCase().includes(q) ||
+      (u.role||'').toLowerCase().includes(q));
+    render(list);
+  }
+
+  function render(users) {
+    const body = $('usersBody');
+    if (!users.length) {
+      body.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--gray-500);padding:24px">No matching users.</td></tr>';
+      return;
+    }
+    body.innerHTML = users.map(u => {
+      const fullName = ((u.firstName||'') + ' ' + (u.lastName||'')).trim();
+      return '<tr>' +
+        '<td><div class="client-cell"><span class="client-avatar">' + initials(u.firstName, u.lastName) + '</span>' +
+        '<div><div class="client-name">' + fullName + '</div>' +
+        '<div class="client-email">' + (u.email||'') + '</div></div></div></td>' +
+        '<td>' + fullName + '</td>' +
+        '<td class="acc-num">' + (u.email||'') + '</td>' +
+        '<td>' + roleBadge(u.role) + '</td>' +
+      '</tr>';
+    }).join('');
+  }
+
+  async function loadUsers() {
+    const body = $('usersBody');
+    try {
+      const [usrSnap, accSnap] = await Promise.all([
+        getDocs(collection(db, COL.USERS)),
+        getDocs(collection(db, COL.ACCOUNTS)),
+      ]);
+      allUsers = usrSnap.docs.map(d => d.data());
+      $('userCount').textContent = allUsers.length + ' users';
+
+      const staff = allUsers.filter(u => u.role === ROLES.ADMIN || u.role === ROLES.EMPLOYEE).length;
+      const customers = allUsers.filter(u => u.role === ROLES.CUSTOMER).length;
+      $('pcStaff').textContent = staff;
+      $('pcCustomers').textContent = customers;
+      $('pcAccounts').textContent = accSnap.size;
+
+      if (!allUsers.length) {
+        body.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--gray-500);padding:24px">No users found</td></tr>';
+        return;
+      }
+      applyFilter();
+    } catch (e) {
+      body.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--red);padding:24px">Error: ' + e.message + '</td></tr>';
+    }
+  }
+</script>
+</body>
+</html>

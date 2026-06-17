@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NOVA BANK - My Account</title>
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="stylesheet" href="bankSystem.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+<div class="app-shell">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-brand-icon">NB</div>
+      <div class="sidebar-brand-text">
+        <div class="brand-main">NOVA BANK</div>
+        <div class="brand-sub">Your Trust, Our Commitment</div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">My Banking</div>
+      <a href="my-account.html" class="nav-item active"><i class="fa fa-wallet"></i> My Account</a>
+      <a href="#myTransactions" class="nav-item"><i class="fa fa-clock-rotate-left"></i> My Transactions</a>
+      <a href="loginPage.html" class="nav-item" id="logoutLink"><i class="fa fa-right-from-bracket"></i> Logout</a>
+    </nav>
+    <div class="sidebar-user">
+      <div class="sidebar-user-avatar" id="sbAvatar">··</div>
+      <div class="sidebar-user-info">
+        <div class="user-name" id="sbName">Loading...</div>
+        <div class="user-role">Customer</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="topbar-title">My <span>Account</span></div>
+    <div class="topbar-actions">
+      <button class="topbar-btn"><i class="fa fa-bell"></i><span class="dot"></span></button>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main class="main-content">
+    <!-- Welcome -->
+    <div class="welcome-header">
+      <div class="welcome-text">
+        <h2>Welcome, <span id="welcomeName">Customer</span> 👋</h2>
+        <p>Here's an overview of your accounts.</p>
+      </div>
+    </div>
+
+    <!-- No account notice -->
+    <div class="card" id="noAccountNotice" style="display:none;margin-bottom:24px">
+      <div class="card-body">
+        <div class="empty-state">
+          <i class="fa fa-circle-info"></i>
+          <h3>No bank account yet</h3>
+          <p>Your profile is registered. An administrator will open a bank account for you soon.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Account cards -->
+    <div class="stats-grid" id="accountCards"></div>
+
+    <!-- My transactions -->
+    <div class="card" id="myTransactions">
+      <div class="card-header">
+        <div class="card-title">My Transactions</div>
+        <span class="badge gold" id="txCount">0 records</span>
+      </div>
+      <div class="card-body">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Type</th><th>Account</th><th>Amount</th><th>Date</th></tr>
+            </thead>
+            <tbody id="txBody">
+              <tr><td colspan="4" style="text-align:center;color:var(--gray-500);padding:24px">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
+</div>
+
+<script type="module">
+  import { guard, logout } from "./auth.js";
+  import { db, COL, ROLES } from "./firebase-config.js";
+  import {
+    collection, query, where, getDocs, orderBy,
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const fmt = n => '$' + Number(n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const initials = (a, b) => ((a?.[0] || '') + (b?.[0] || '')).toUpperCase();
+
+  function txDate(t) {
+    if (t.createdAt && t.createdAt.toDate) return t.createdAt.toDate().toLocaleString();
+    return t.dateText || '-';
+  }
+
+  guard([ROLES.CUSTOMER]).then(async (profile) => {
+    // sidebar identity
+    document.getElementById('sbName').textContent = (profile.firstName + ' ' + profile.lastName).trim();
+    document.getElementById('sbAvatar').textContent = initials(profile.firstName, profile.lastName);
+    document.getElementById('welcomeName').textContent = profile.firstName || 'Customer';
+
+    // logout
+    document.getElementById('logoutLink').addEventListener('click', async (e) => {
+      e.preventDefault();
+      await logout();
+      window.location.href = 'loginPage.html';
+    });
+
+    // load this customer's bank accounts
+    const accSnap = await getDocs(query(collection(db, COL.ACCOUNTS), where('ownerUid', '==', profile.uid)));
+    const accounts = accSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+    const cards = document.getElementById('accountCards');
+    if (!accounts.length) {
+      document.getElementById('noAccountNotice').style.display = 'block';
+    } else {
+      const total = accounts.reduce((s, a) => s + Number(a.balance || 0), 0);
+      let html = `
+        <div class="stat-card featured">
+          <div class="stat-icon gold"><i class="fa fa-dollar-sign"></i></div>
+          <div class="stat-label">Total Balance</div>
+          <div class="stat-value">${fmt(total)}</div>
+          <div class="stat-change">${accounts.length} account(s)</div>
+        </div>`;
+      accounts.forEach(a => {
+        html += `
+        <div class="stat-card">
+          <div class="stat-icon navy"><i class="fa fa-building-columns"></i></div>
+          <div class="stat-label">${a.accountType || 'Account'} · ${a.accountNumber}</div>
+          <div class="stat-value">${fmt(a.balance)}</div>
+          <div class="stat-change up"><i class="fa fa-circle-check"></i> ${a.status || 'active'}</div>
+        </div>`;
+      });
+      cards.innerHTML = html;
+    }
+
+    // load this customer's transactions (by their account numbers)
+    const myAccNums = accounts.map(a => a.accountNumber);
+    const txBody = document.getElementById('txBody');
+    if (!myAccNums.length) {
+      txBody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--gray-500);padding:24px">No transactions yet</td></tr>';
+      document.getElementById('txCount').textContent = '0 records';
+      return;
+    }
+
+    // Firestore "in" supports up to 30 values; customers have few accounts
+    const txSnap = await getDocs(query(collection(db, COL.TX), orderBy('createdAt', 'desc')));
+    const myTx = txSnap.docs.map(d => d.data()).filter(t =>
+      myAccNums.includes(t.fromAccount) || myAccNums.includes(t.toAccount));
+
+    document.getElementById('txCount').textContent = myTx.length + ' records';
+    if (!myTx.length) {
+      txBody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--gray-500);padding:24px">No transactions yet</td></tr>';
+      return;
+    }
+
+    txBody.innerHTML = myTx.map(t => {
+      const incoming = myAccNums.includes(t.toAccount) && t.type !== 'withdraw';
+      const isWithdraw = t.type === 'withdraw';
+      const sign = isWithdraw ? '-' : (incoming ? '+' : '-');
+      const cls = sign === '+' ? 'plus' : 'minus';
+      const acc = t.type === 'transfer' ? `${t.fromAccount} → ${t.toAccount}` : t.fromAccount;
+      const badge = t.type === 'deposit' ? 'active' : (t.type === 'withdraw' ? 'failed' : 'info');
+      const label = (t.type || '').charAt(0).toUpperCase() + (t.type || '').slice(1);
+      return `<tr>
+        <td><span class="badge ${badge}">${label}</span></td>
+        <td class="acc-num">${acc}</td>
+        <td class="tx-amount ${cls}">${sign}${fmt(t.amount)}</td>
+        <td>${txDate(t)}</td>
+      </tr>`;
+    }).join('');
+  });
+</script>
+</body>
+</html>

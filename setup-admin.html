@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NOVA BANK - First Admin Setup</title>
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="stylesheet" href="bankSystem.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body style="display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,var(--navy-900),var(--navy-800));">
+
+  <div class="login-form-box" style="max-width:440px;background:#fff;padding:40px;border-radius:var(--radius-xl);box-shadow:var(--shadow-lg)">
+    <h2 style="color:var(--navy-900)"><i class="fa fa-user-shield" style="color:var(--gold)"></i> First Admin Setup</h2>
+    <p>Run this once to create the first administrator account. After that, delete or ignore this page.</p>
+
+    <div class="form-group">
+      <label class="form-label">Admin Full Name</label>
+      <input class="form-control" type="text" id="fullName" placeholder="Ahmed Sayed">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Admin Email</label>
+      <div class="form-control-icon"><i class="fa fa-envelope"></i>
+        <input class="form-control" type="email" id="email" placeholder="admin@novabank.com"></div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Password (min 6 chars)</label>
+      <div class="form-control-icon"><i class="fa fa-lock"></i>
+        <input class="form-control" type="password" id="password" placeholder="••••••••"></div>
+    </div>
+
+    <div id="msg" style="display:none;font-size:13px;margin-bottom:14px;"></div>
+    <button class="btn btn-gold btn-block" id="createBtn">Create Admin</button>
+    <a href="loginPage.html" class="btn btn-outline btn-block" style="margin-top:10px">Go to Login</a>
+  </div>
+
+  <script type="module">
+    import { auth, db, ROLES, COL } from "./firebase-config.js";
+    import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const $ = id => document.getElementById(id);
+    const msg = $('msg');
+    function show(text, ok) {
+      msg.textContent = text;
+      msg.style.color = ok ? 'var(--green)' : 'var(--red)';
+      msg.style.display = 'block';
+    }
+
+    $('createBtn').addEventListener('click', async () => {
+      const fullName = $('fullName').value.trim();
+      const email = $('email').value.trim();
+      const password = $('password').value;
+      if (!fullName || !email || password.length < 6) {
+        show('Fill all fields. Password must be at least 6 characters.', false);
+        return;
+      }
+      try {
+        const cred = await createUserWithEmailAndPassword(auth, email, password);
+        const parts = fullName.split(' ');
+        await setDoc(doc(db, COL.USERS, cred.user.uid), {
+          uid: cred.user.uid,
+          firstName: parts[0] || fullName,
+          lastName: parts.slice(1).join(' '),
+          email,
+          role: ROLES.ADMIN,
+          permissions: -1,
+          status: 'active',
+          createdAt: serverTimestamp(),
+        });
+        show('Admin created! Redirecting to login...', true);
+        setTimeout(() => window.location.href = 'loginPage.html', 1800);
+      } catch (e) {
+        show(e.code === 'auth/email-already-in-use'
+          ? 'This email already has an account.'
+          : (e.message || 'Failed to create admin.'), false);
+      }
+    });
+  </script>
+</body>
+</html>

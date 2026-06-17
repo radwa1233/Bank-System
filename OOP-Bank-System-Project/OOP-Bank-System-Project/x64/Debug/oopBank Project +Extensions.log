@@ -1,0 +1,90 @@
+﻿  oopBank Project +Extensions.cpp
+C:\Users\ra\source\repos\oopBank Project +Extensions\oopBank Project +Extensions\clsString.h(39,25): warning C4267: 'return': conversion from 'size_t' to 'short', possible loss of data
+  (compiling source file 'oopBank%20Project%20+Extensions.cpp')
+  
+C:\Users\ra\source\repos\oopBank Project +Extensions\oopBank Project +Extensions\clsString.h(44,29): warning C4267: 'return': conversion from 'size_t' to 'short', possible loss of data
+  (compiling source file 'oopBank%20Project%20+Extensions.cpp')
+  
+C:\Users\ra\source\repos\oopBank Project +Extensions\oopBank Project +Extensions\clsString.h(56,30): warning C4267: '=': conversion from 'size_t' to 'short', possible loss of data
+  (compiling source file 'oopBank%20Project%20+Extensions.cpp')
+  
+C:\Users\ra\source\repos\oopBank Project +Extensions\oopBank Project +Extensions\clsString.h(193,29): warning C4267: 'return': conversion from 'size_t' to 'short', possible loss of data
+  (compiling source file 'oopBank%20Project%20+Extensions.cpp')
+  
+C:\Users\ra\source\repos\oopBank Project +Extensions\oopBank Project +Extensions\clsString.h(324,30): warning C4267: '=': conversion from 'size_t' to 'short', possible loss of data
+  (compiling source file 'oopBank%20Project%20+Extensions.cpp')
+  
+C:\Users\ra\source\repos\oopBank Project +Extensions\oopBank Project +Extensions\clsString.h(372,22): warning C4267: 'initializing': conversion from 'size_t' to 'short', possible loss of data
+  (compiling source file 'oopBank%20Project%20+Extensions.cpp')
+  
+C:\Users\ra\source\repos\oopBank Project +Extensions\oopBank Project +Extensions\clsInputValidate.h(98,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+  (compiling source file 'oopBank%20Project%20+Extensions.cpp')
+  
+C:\Users\ra\source\repos\oopBank Project +Extensions\oopBank Project +Extensions\clsInputValidate.h(102,26): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  (compiling source file 'oopBank%20Project%20+Extensions.cpp')
+  
+C:\Users\ra\source\repos\oopBank Project +Extensions\oopBank Project +Extensions\clsInputValidate.h(143,16): warning C4244: 'initializing': conversion from 'double' to 'short', possible loss of data
+  (compiling source file 'oopBank%20Project%20+Extensions.cpp')
+  
+C:\Users\ra\source\repos\oopBank Project +Extensions\oopBank Project +Extensions\clsInputValidate.h(147,26): warning C4244: '=': conversion from 'double' to 'short', possible loss of data
+  (compiling source file 'oopBank%20Project%20+Extensions.cpp')
+  
+C:\Users\ra\source\repos\oopBank Project +Extensions\oopBank Project +Extensions\clsBankClient.h(28,65): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  (compiling source file 'oopBank%20Project%20+Extensions.cpp')
+  
+C:\Users\ra\source\repos\oopBank Project +Extensions\oopBank Project +Extensions\clsBankClient.h(358,28): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+  (compiling source file 'oopBank%20Project%20+Extensions.cpp')
+  
+C:\Users\ra\source\repos\oopBank Project +Extensions\oopBank Project +Extensions\clsBankClient.h(364,28): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+  (compiling source file 'oopBank%20Project%20+Extensions.cpp')
+  
+C:\Users\ra\source\repos\oopBank Project +Extensions\oopBank Project +Extensions\clsBankClient.h(433,30): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+  (compiling source file 'oopBank%20Project%20+Extensions.cpp')
+  
+C:\Users\ra\source\repos\oopBank Project +Extensions\oopBank Project +Extensions\clsAddNewClientScreen.h(30,66): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  (compiling source file 'oopBank%20Project%20+Extensions.cpp')
+  
+C:\Users\ra\source\repos\oopBank Project +Extensions\oopBank Project +Extensions\clsDeleteClientScreen.h(44,21): warning C4129: 'C': unrecognized character escape sequence
+  (compiling source file 'oopBank%20Project%20+Extensions.cpp')
+  
+C:\Users\ra\source\repos\oopBank Project +Extensions\oopBank Project +Extensions\clsUpdateClientScreen.h(47,66): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  (compiling source file 'oopBank%20Project%20+Extensions.cpp')
+  
+C:\Users\ra\source\repos\oopBank Project +Extensions\oopBank Project +Extensions\clsWithdrwaScreen.h(42,21): warning C4129: 'W': unrecognized character escape sequence
+  (compiling source file 'oopBank%20Project%20+Extensions.cpp')
+  
+C:\Users\ra\source\repos\oopBank Project +Extensions\oopBank Project +Extensions\clsWithdrwaScreen.h(64,26): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  (compiling source file 'oopBank%20Project%20+Extensions.cpp')
+  
+C:\Users\ra\source\repos\oopBank Project +Extensions\oopBank Project +Extensions\clsUtil.h(64,5): warning C4102: 'defualt': unreferenced label
+  (compiling source file 'oopBank%20Project%20+Extensions.cpp')
+  
+C:\Users\ra\source\repos\oopBank Project +Extensions\oopBank Project +Extensions\clsTotalBalancesScreen.h(56,82): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+  (compiling source file 'oopBank%20Project%20+Extensions.cpp')
+  
+C:\Users\ra\source\repos\oopBank Project +Extensions\oopBank Project +Extensions\clsTransfreScreen.h(66,36): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  (compiling source file 'oopBank%20Project%20+Extensions.cpp')
+  
+C:\Users\ra\source\repos\oopBank Project +Extensions\oopBank Project +Extensions\clsTransfreScreen.h(67,36): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  (compiling source file 'oopBank%20Project%20+Extensions.cpp')
+  
+C:\Users\ra\source\repos\oopBank Project +Extensions\oopBank Project +Extensions\clsTransfreScreen.h(74,42): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+  (compiling source file 'oopBank%20Project%20+Extensions.cpp')
+  
+C:\Users\ra\source\repos\oopBank Project +Extensions\oopBank Project +Extensions\clsCurrency.h(27,17): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  (compiling source file 'oopBank%20Project%20+Extensions.cpp')
+  
+C:\Users\ra\source\repos\oopBank Project +Extensions\oopBank Project +Extensions\clsUpateCurrencyScreen.h(17,52): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  (compiling source file 'oopBank%20Project%20+Extensions.cpp')
+  
+C:\Users\ra\source\repos\oopBank Project +Extensions\oopBank Project +Extensions\clsCalculatorScreen.h(17,51): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  (compiling source file 'oopBank%20Project%20+Extensions.cpp')
+  
+C:\Users\ra\source\repos\oopBank Project +Extensions\oopBank Project +Extensions\clsLoginScreen.h(23,25): warning C4129: 'I': unrecognized character escape sequence
+  (compiling source file 'oopBank%20Project%20+Extensions.cpp')
+  
+C:\Users\ra\source\repos\oopBank Project +Extensions\oopBank Project +Extensions\clsLoginScreen.h(47,1): warning C4715: 'clsLoginScreen::_Login': not all control paths return a value
+C:\Users\ra\source\repos\oopBank Project +Extensions\oopBank Project +Extensions\clsBankClient.h(309,1): warning C4715: 'clsBankClient::Save': not all control paths return a value
+C:\Users\ra\source\repos\oopBank Project +Extensions\oopBank Project +Extensions\TransferLogScreen.h(47,1): warning C4715: 'TransferLogScreen::_LoadRegisterDataFromFile': not all control paths return a value
+C:\Users\ra\source\repos\oopBank Project +Extensions\oopBank Project +Extensions\clsUser.h(326,1): warning C4715: 'clsUser::Save': not all control paths return a value
+  oopBank Project +Extensions.vcxproj -> C:\Users\ra\source\repos\oopBank Project +Extensions\x64\Debug\oopBank Project +Extensions.exe

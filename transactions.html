@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NOVA BANK - Transactions</title>
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="stylesheet" href="bankSystem.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+<div class="app-shell">
+
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-brand-icon">NB</div>
+      <div class="sidebar-brand-text">
+        <div class="brand-main">NOVA BANK</div>
+        <div class="brand-sub">Your Trust, Our Commitment</div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Main</div>
+      <a href="dashboard.html" class="nav-item"><i class="fa fa-house"></i> Dashboard</a>
+      <a href="clients.html" class="nav-item"><i class="fa fa-users"></i> Clients</a>
+      <a href="transactions.html" class="nav-item active"><i class="fa fa-right-left"></i> Transactions</a>
+      <a href="users.html" class="nav-item"><i class="fa fa-user"></i> Users</a>
+      <div class="nav-section-label">Tools</div>
+      <a href="currency.html" class="nav-item"><i class="fa fa-money-bill-transfer"></i> Currency Exchange</a>
+      <a href="reports.html" class="nav-item"><i class="fa fa-chart-line"></i> Reports</a>
+      <a href="settings.html" class="nav-item"><i class="fa fa-gear"></i> Settings</a>
+      <a href="loginPage.html" class="nav-item" id="logoutLink"><i class="fa fa-right-from-bracket"></i> Logout</a>
+    </nav>
+    <div class="sidebar-user">
+      <div class="sidebar-user-avatar" id="sbAvatar">··</div>
+      <div class="sidebar-user-info">
+        <div class="user-name" id="sbName">Loading...</div>
+        <div class="user-role" id="sbRole">—</div>
+      </div>
+    </div>
+  </aside>
+
+  <header class="topbar">
+    <div class="topbar-title">Trans<span>actions</span></div>
+    <div class="topbar-search">
+      <i class="fa fa-magnifying-glass"></i>
+      <input type="text" id="searchBox" placeholder="Search transactions...">
+    </div>
+    <div class="topbar-actions">
+      <button class="topbar-btn"><i class="fa fa-bell"></i><span class="dot"></span></button>
+      <button class="topbar-btn"><i class="fa fa-envelope"></i></button>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <div class="page-header">
+      <div class="page-header-left">
+        <h2>Transactions</h2>
+        <p>Deposit, withdraw, and transfer funds between accounts.</p>
+      </div>
+      <button class="btn btn-gold" onclick="openOp('transfer')"><i class="fa fa-right-left"></i> New Transfer</button>
+    </div>
+
+    <!-- Operation cards -->
+    <div class="currency-grid">
+      <div class="currency-card" onclick="openOp('deposit')">
+        <div class="stat-icon green" style="margin:0 auto 8px"><i class="fa fa-arrow-down"></i></div>
+        <div class="currency-code">Deposit</div>
+        <div class="currency-name">Add funds to an account</div>
+      </div>
+      <div class="currency-card" onclick="openOp('withdraw')">
+        <div class="stat-icon" style="background:var(--red-bg);color:var(--red);margin:0 auto 8px"><i class="fa fa-arrow-up"></i></div>
+        <div class="currency-code">Withdraw</div>
+        <div class="currency-name">Take funds out of an account</div>
+      </div>
+      <div class="currency-card" onclick="openOp('transfer')">
+        <div class="stat-icon blue" style="margin:0 auto 8px"><i class="fa fa-right-left"></i></div>
+        <div class="currency-code">Transfer</div>
+        <div class="currency-name">Move funds between accounts</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Transaction History</div>
+        <span class="badge gold" id="txCount">0 records</span>
+      </div>
+      <div class="card-body">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Date &amp; Time</th><th>Type</th><th>From</th><th>To</th><th>Amount</th><th>User</th></tr>
+            </thead>
+            <tbody id="txBody">
+              <tr><td colspan="6" style="text-align:center;color:var(--gray-500);padding:24px">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
+</div>
+
+<!-- OPERATION MODAL -->
+<div class="modal-overlay" id="opModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="opTitle">Deposit</div>
+      <span class="modal-close" onclick="closeOp()"><i class="fa fa-xmark"></i></span>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label" id="opAccLabel">Account Number</label>
+        <input class="form-control" type="text" id="opAccount" placeholder="A00">
+      </div>
+      <div class="form-group" id="opToWrap" style="display:none">
+        <label class="form-label">To Account</label>
+        <input class="form-control" type="text" id="opToAccount" placeholder="A00">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Amount</label>
+        <input class="form-control" type="number" id="opAmount" placeholder="0.00">
+      </div>
+      <div id="opError" style="display:none;color:var(--red);font-size:13px;margin-top:6px;"></div>
+      <div id="opSuccess" style="display:none;color:var(--green);font-size:13px;margin-top:6px;"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeOp()">Cancel</button>
+      <button class="btn btn-gold" id="opConfirm">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { guard, logout } from "./auth.js";
+  import { db, COL, ROLES } from "./firebase-config.js";
+  import {
+    collection, getDocs, query, where, orderBy, addDoc,
+    runTransaction, doc, serverTimestamp,
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const $ = id => document.getElementById(id);
+  const fmt = n => '$' + Number(n||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const initials = (f,l) => ((f?.[0]||'')+(l?.[0]||'')).toUpperCase();
+  let currentOp = 'deposit';
+  let me = null;
+
+  guard([ROLES.ADMIN, ROLES.EMPLOYEE]).then(profile => {
+    me = profile;
+    $('sbName').textContent = (profile.firstName + ' ' + profile.lastName).trim();
+    $('sbAvatar').textContent = initials(profile.firstName, profile.lastName);
+    $('sbRole').textContent = profile.role === ROLES.ADMIN ? 'Admin' : 'Employee';
+    $('logoutLink').addEventListener('click', async e => {
+      e.preventDefault(); await logout(); window.location.href = 'loginPage.html';
+    });
+    $('searchBox').addEventListener('input', applyFilter);
+    loadHistory();
+  });
+
+  window.openOp = function (kind) {
+    currentOp = kind;
+    $('opTitle').textContent = kind.charAt(0).toUpperCase() + kind.slice(1);
+    $('opToWrap').style.display = (kind === 'transfer') ? 'block' : 'none';
+    $('opAccLabel').textContent = (kind === 'transfer') ? 'From Account' : 'Account Number';
+    $('opAccount').value = ''; $('opToAccount').value = ''; $('opAmount').value = '';
+    $('opError').style.display = 'none'; $('opSuccess').style.display = 'none';
+    $('opModal').classList.add('open');
+  };
+  window.closeOp = () => $('opModal').classList.remove('open');
+
+  // find an account doc id by its accountNumber
+  async function findAccount(accNum) {
+    const snap = await getDocs(query(collection(db, COL.ACCOUNTS), where('accountNumber', '==', accNum)));
+    return snap.empty ? null : { id: snap.docs[0].id, ...snap.docs[0].data() };
+  }
+
+  async function confirmOp() {
+    const err = $('opError'), ok = $('opSuccess');
+    err.style.display = 'none'; ok.style.display = 'none';
+    const fromNum = $('opAccount').value.trim();
+    const toNum = $('opToAccount').value.trim();
+    const amount = Number($('opAmount').value || 0);
+
+    if (!fromNum) { err.textContent = 'Account number is required'; err.style.display = 'block'; return; }
+    if (amount <= 0) { err.textContent = 'Amount must be greater than zero'; err.style.display = 'block'; return; }
+    if (currentOp === 'transfer' && !toNum) { err.textContent = 'Destination account is required'; err.style.display = 'block'; return; }
+
+    try {
+      const src = await findAccount(fromNum);
+      if (!src) throw new Error('Account ' + fromNum + ' not found');
+      let dst = null;
+      if (currentOp === 'transfer') {
+        dst = await findAccount(toNum);
+        if (!dst) throw new Error('Destination account ' + toNum + ' not found');
+        if (src.id === dst.id) throw new Error('Cannot transfer to the same account');
+      }
+
+      let newBalance;
+      await runTransaction(db, async (tx) => {
+        const srcRef = doc(db, COL.ACCOUNTS, src.id);
+        const srcSnap = await tx.get(srcRef);
+        let bal = Number(srcSnap.data().balance || 0);
+
+        if (currentOp === 'deposit') {
+          bal += amount;
+        } else {
+          if (bal < amount) throw new Error('Insufficient balance');
+          bal -= amount;
+        }
+        tx.update(srcRef, { balance: bal });
+        newBalance = bal;
+
+        if (currentOp === 'transfer') {
+          const dstRef = doc(db, COL.ACCOUNTS, dst.id);
+          const dstSnap = await tx.get(dstRef);
+          tx.update(dstRef, { balance: Number(dstSnap.data().balance || 0) + amount });
+        }
+      });
+
+      await addDoc(collection(db, COL.TX), {
+        type: currentOp,
+        fromAccount: fromNum,
+        toAccount: currentOp === 'transfer' ? toNum : '',
+        amount: amount,
+        byUser: me.email,
+        createdAt: serverTimestamp(),
+      });
+
+      ok.textContent = 'Done! New balance: ' + fmt(newBalance);
+      ok.style.display = 'block';
+      loadHistory();
+      setTimeout(window.closeOp, 1500);
+    } catch (e) {
+      err.textContent = e.message; err.style.display = 'block';
+    }
+  }
+
+  function txDate(t) {
+    if (t.createdAt && t.createdAt.toDate) return t.createdAt.toDate().toLocaleString();
+    return '-';
+  }
+
+  let allTx = [];
+
+  function applyFilter() {
+    const q = $('searchBox').value.trim().toLowerCase();
+    const list = !q ? allTx : allTx.filter(t =>
+      (t.type||'').toLowerCase().includes(q) ||
+      (t.fromAccount||'').toLowerCase().includes(q) ||
+      (t.toAccount||'').toLowerCase().includes(q) ||
+      (t.byUser||'').toLowerCase().includes(q));
+    renderHistory(list);
+  }
+
+  function renderHistory(list) {
+    const body = $('txBody');
+    if (!list.length) {
+      body.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--gray-500);padding:24px">No matching transactions</td></tr>';
+      return;
+    }
+    body.innerHTML = list.map(t => {
+      const badge = t.type === 'deposit' ? 'active' : (t.type === 'withdraw' ? 'failed' : 'info');
+      const label = (t.type||'').charAt(0).toUpperCase() + (t.type||'').slice(1);
+      const sign = t.type === 'deposit' ? '+' : '-';
+      const cls = t.type === 'deposit' ? 'plus' : 'minus';
+      return '<tr>' +
+        '<td>' + txDate(t) + '</td>' +
+        '<td><span class="badge ' + badge + '">' + label + '</span></td>' +
+        '<td class="acc-num">' + t.fromAccount + '</td>' +
+        '<td class="acc-num">' + (t.toAccount || '-') + '</td>' +
+        '<td class="tx-amount ' + cls + '">' + sign + fmt(t.amount) + '</td>' +
+        '<td>' + (t.byUser || '-') + '</td>' +
+      '</tr>';
+    }).join('');
+  }
+
+  async function loadHistory() {
+    const body = $('txBody');
+    try {
+      const snap = await getDocs(query(collection(db, COL.TX), orderBy('createdAt', 'desc')));
+      allTx = snap.docs.map(d => d.data());
+      $('txCount').textContent = allTx.length + ' records';
+      if (!allTx.length) {
+        body.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--gray-500);padding:24px">No transactions yet</td></tr>';
+        return;
+      }
+      applyFilter();
+    } catch (e) {
+      body.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--red);padding:24px">Error: ' + e.message + '</td></tr>';
+    }
+  }
+
+  $('opConfirm').addEventListener('click', confirmOp);
+</script>
+</body>
+</html>

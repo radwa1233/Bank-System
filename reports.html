@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NOVA BANK - Reports</title>
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="stylesheet" href="bankSystem.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+<div class="app-shell">
+
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-brand-icon">NB</div>
+      <div class="sidebar-brand-text">
+        <div class="brand-main">NOVA BANK</div>
+        <div class="brand-sub">Your Trust, Our Commitment</div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Main</div>
+      <a href="dashboard.html" class="nav-item"><i class="fa fa-house"></i> Dashboard</a>
+      <a href="clients.html" class="nav-item"><i class="fa fa-users"></i> Clients</a>
+      <a href="transactions.html" class="nav-item"><i class="fa fa-right-left"></i> Transactions</a>
+      <a href="users.html" class="nav-item"><i class="fa fa-user"></i> Users</a>
+      <div class="nav-section-label">Tools</div>
+      <a href="currency.html" class="nav-item"><i class="fa fa-money-bill-transfer"></i> Currency Exchange</a>
+      <a href="reports.html" class="nav-item active"><i class="fa fa-chart-line"></i> Reports</a>
+      <a href="settings.html" class="nav-item"><i class="fa fa-gear"></i> Settings</a>
+      <a href="loginPage.html" class="nav-item" id="logoutLink"><i class="fa fa-right-from-bracket"></i> Logout</a>
+    </nav>
+    <div class="sidebar-user">
+      <div class="sidebar-user-avatar" id="sbAvatar">··</div>
+      <div class="sidebar-user-info">
+        <div class="user-name" id="sbName">Loading...</div>
+        <div class="user-role" id="sbRole">—</div>
+      </div>
+    </div>
+  </aside>
+
+  <header class="topbar">
+    <div class="topbar-title">Re<span>ports</span></div>
+    <div class="topbar-search">
+      <i class="fa fa-magnifying-glass"></i>
+      <input type="text" placeholder="Search reports...">
+    </div>
+    <div class="topbar-actions">
+      <button class="topbar-btn"><i class="fa fa-bell"></i><span class="dot"></span></button>
+      <button class="topbar-btn"><i class="fa fa-envelope"></i></button>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <div class="page-header">
+      <div class="page-header-left">
+        <h2>Reports</h2>
+        <p>Generate and export financial reports.</p>
+      </div>
+      <button class="btn btn-gold" id="exportBtn"><i class="fa fa-download"></i> Export PDF</button>
+    </div>
+
+    <div class="report-cards">
+      <div class="report-card">
+        <div class="report-icon"><i class="fa fa-file-invoice-dollar"></i></div>
+        <div class="report-name">Total Balance</div>
+        <div class="report-desc" id="rcBalance">—</div>
+      </div>
+      <div class="report-card">
+        <div class="report-icon"><i class="fa fa-chart-pie"></i></div>
+        <div class="report-name">Transactions</div>
+        <div class="report-desc" id="rcTx">—</div>
+      </div>
+      <div class="report-card">
+        <div class="report-icon"><i class="fa fa-users-rectangle"></i></div>
+        <div class="report-name">Accounts</div>
+        <div class="report-desc" id="rcAccounts">—</div>
+      </div>
+    </div>
+
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Transactions by Type</div>
+            <div class="card-subtitle">All time</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="chart-area" id="typeChart">
+            <div style="margin:auto;color:var(--gray-500)">Loading...</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">Summary</div></div>
+        <div class="card-body">
+          <div class="setting-row"><div><div class="setting-label">Total Balance</div><div class="setting-sub">All accounts</div></div><div class="balance-cell" id="sumBalance">—</div></div>
+          <div class="setting-row"><div><div class="setting-label">Total Deposits</div><div class="setting-sub">All time</div></div><div class="balance-cell" id="sumDeposits">—</div></div>
+          <div class="setting-row"><div><div class="setting-label">Total Withdrawals</div><div class="setting-sub">All time</div></div><div class="balance-cell" id="sumWithdrawals">—</div></div>
+          <div class="setting-row"><div><div class="setting-label">Total Transfers</div><div class="setting-sub">All time</div></div><div class="balance-cell" id="sumTransfers">—</div></div>
+          <div class="setting-row"><div><div class="setting-label">Customers</div><div class="setting-sub">Registered</div></div><div class="balance-cell" id="sumCustomers">—</div></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+</div>
+<script type="module">
+  import { guard, logout } from "./auth.js";
+  import { db, COL, ROLES } from "./firebase-config.js";
+  import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  const $ = id => document.getElementById(id);
+  const initials = (f, l) => ((f?.[0]||'') + (l?.[0]||'')).toUpperCase();
+  const money = n => '$' + Number(n||0).toLocaleString(undefined, { maximumFractionDigits: 2 });
+
+  guard([ROLES.ADMIN, ROLES.EMPLOYEE]).then(profile => {
+    $('sbName').textContent = (profile.firstName + ' ' + profile.lastName).trim();
+    $('sbAvatar').textContent = initials(profile.firstName, profile.lastName);
+    $('sbRole').textContent = profile.role === ROLES.ADMIN ? 'Admin' : 'Employee';
+    $('logoutLink').addEventListener('click', async e => {
+      e.preventDefault(); await logout(); window.location.href = 'loginPage.html';
+    });
+    $('exportBtn').addEventListener('click', () => window.print());
+    loadReports();
+  });
+
+  async function loadReports() {
+    const [accSnap, txSnap, usrSnap] = await Promise.all([
+      getDocs(collection(db, COL.ACCOUNTS)),
+      getDocs(collection(db, COL.TX)),
+      getDocs(collection(db, COL.USERS)),
+    ]);
+    const accounts = accSnap.docs.map(d => d.data());
+    const txs = txSnap.docs.map(d => d.data());
+    const users = usrSnap.docs.map(d => d.data());
+
+    const totalBalance = accounts.reduce((s, a) => s + Number(a.balance||0), 0);
+    const deposits  = txs.filter(t => t.type === 'deposit').reduce((s, t) => s + Number(t.amount||0), 0);
+    const withdraws = txs.filter(t => t.type === 'withdraw').reduce((s, t) => s + Number(t.amount||0), 0);
+    const transfers = txs.filter(t => t.type === 'transfer');
+    const transfersAmt = transfers.reduce((s, t) => s + Number(t.amount||0), 0);
+    const customers = users.filter(u => u.role === ROLES.CUSTOMER).length;
+
+    $('rcBalance').textContent = money(totalBalance);
+    $('rcTx').textContent = txs.length + ' records';
+    $('rcAccounts').textContent = accounts.length + ' accounts';
+
+    $('sumBalance').textContent = money(totalBalance);
+    $('sumDeposits').textContent = money(deposits);
+    $('sumWithdrawals').textContent = money(withdraws);
+    $('sumTransfers').textContent = money(transfersAmt);
+    $('sumCustomers').textContent = '+' + customers;
+
+    // simple bar chart by transaction type
+    const counts = {
+      Deposit: txs.filter(t => t.type==='deposit').length,
+      Withdraw: txs.filter(t => t.type==='withdraw').length,
+      Transfer: transfers.length,
+    };
+    const max = Math.max(1, ...Object.values(counts));
+    $('typeChart').innerHTML = Object.entries(counts).map(([k, v], i) =>
+      `<div class="chart-bar-wrap">
+        <div class="chart-bar ${i % 2 ? 'navy' : ''}" style="height:${Math.round(v / max * 100)}%"></div>
+        <span class="chart-bar-label">${k} (${v})</span>
+      </div>`).join('');
+  }
+</script>
+</body>
+</html>

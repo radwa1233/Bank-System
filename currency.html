@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NOVA BANK - Currency Exchange</title>
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="stylesheet" href="bankSystem.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+<div class="app-shell">
+
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-brand-icon">NB</div>
+      <div class="sidebar-brand-text">
+        <div class="brand-main">NOVA BANK</div>
+        <div class="brand-sub">Your Trust, Our Commitment</div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Main</div>
+      <a href="dashboard.html" class="nav-item"><i class="fa fa-house"></i> Dashboard</a>
+      <a href="clients.html" class="nav-item"><i class="fa fa-users"></i> Clients</a>
+      <a href="transactions.html" class="nav-item"><i class="fa fa-right-left"></i> Transactions</a>
+      <a href="users.html" class="nav-item"><i class="fa fa-user"></i> Users</a>
+      <div class="nav-section-label">Tools</div>
+      <a href="currency.html" class="nav-item active"><i class="fa fa-money-bill-transfer"></i> Currency Exchange</a>
+      <a href="reports.html" class="nav-item"><i class="fa fa-chart-line"></i> Reports</a>
+      <a href="settings.html" class="nav-item"><i class="fa fa-gear"></i> Settings</a>
+      <a href="loginPage.html" class="nav-item" id="logoutLink"><i class="fa fa-right-from-bracket"></i> Logout</a>
+    </nav>
+    <div class="sidebar-user">
+      <div class="sidebar-user-avatar" id="sbAvatar">··</div>
+      <div class="sidebar-user-info">
+        <div class="user-name" id="sbName">Loading...</div>
+        <div class="user-role" id="sbRole">—</div>
+      </div>
+    </div>
+  </aside>
+
+  <header class="topbar">
+    <div class="topbar-title">Currency <span>Exchange</span></div>
+    <div class="topbar-search">
+      <i class="fa fa-magnifying-glass"></i>
+      <input type="text" placeholder="Search currency...">
+    </div>
+    <div class="topbar-actions">
+      <button class="topbar-btn"><i class="fa fa-bell"></i><span class="dot"></span></button>
+      <button class="topbar-btn"><i class="fa fa-envelope"></i></button>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <div class="page-header">
+      <div class="page-header-left">
+        <h2>Currency Exchange</h2>
+        <p>Live rates and conversion calculator. Base currency: USD.</p>
+      </div>
+    </div>
+
+    <div class="currency-grid" id="currencyGrid">
+      <div style="grid-column:1/-1;text-align:center;color:var(--gray-500);padding:24px">Loading currencies...</div>
+    </div>
+
+    <div class="calc-box">
+      <h3><i class="fa fa-calculator"></i> Currency Converter</h3>
+      <div class="calc-row">
+        <div class="form-group" style="margin:0">
+          <label class="form-label">Amount</label>
+          <input class="form-control" type="number" id="calcAmount" value="1000">
+        </div>
+        <div class="calc-swap" id="calcSwap"><i class="fa fa-right-left"></i></div>
+        <div class="form-group" style="margin:0">
+          <label class="form-label">From</label>
+          <select class="form-control" id="calcFrom"></select>
+        </div>
+        <div class="form-group" style="margin:0">
+          <label class="form-label">To</label>
+          <select class="form-control" id="calcTo"></select>
+        </div>
+      </div>
+      <div class="calc-result">
+        <div class="result-val" id="calcResult">—</div>
+        <div class="result-label" id="calcLabel">Enter an amount to convert</div>
+      </div>
+    </div>
+  </main>
+
+</div>
+
+<script type="module">
+  import { guard, logout } from "./auth.js";
+  import { ROLES } from "./firebase-config.js";
+
+  const $ = id => document.getElementById(id);
+  const initials = (f, l) => ((f?.[0]||'') + (l?.[0]||'')).toUpperCase();
+
+  // built-in reference rates (units per 1 USD) — no server needed
+  const CUR = [
+    { code:'USD', name:'US Dollar', rate:1.00,  flag:'🇺🇸' },
+    { code:'EUR', name:'Euro', rate:0.92,  flag:'🇪🇺' },
+    { code:'GBP', name:'British Pound', rate:0.79, flag:'🇬🇧' },
+    { code:'EGP', name:'Egyptian Pound', rate:48.50, flag:'🇪🇬' },
+    { code:'SAR', name:'Saudi Riyal', rate:3.75, flag:'🇸🇦' },
+    { code:'AED', name:'UAE Dirham', rate:3.67, flag:'🇦🇪' },
+    { code:'KWD', name:'Kuwaiti Dinar', rate:0.31, flag:'🇰🇼' },
+    { code:'JPY', name:'Japanese Yen', rate:156.8, flag:'🇯🇵' },
+    { code:'CAD', name:'Canadian Dollar', rate:1.36, flag:'🇨🇦' },
+    { code:'CNY', name:'Chinese Yuan', rate:7.25, flag:'🇨🇳' },
+    { code:'INR', name:'Indian Rupee', rate:83.30, flag:'🇮🇳' },
+    { code:'TRY', name:'Turkish Lira', rate:32.00, flag:'🇹🇷' },
+  ];
+
+  guard([ROLES.ADMIN, ROLES.EMPLOYEE]).then(profile => {
+    $('sbName').textContent = (profile.firstName + ' ' + profile.lastName).trim();
+    $('sbAvatar').textContent = initials(profile.firstName, profile.lastName);
+    $('sbRole').textContent = profile.role === ROLES.ADMIN ? 'Admin' : 'Employee';
+    $('logoutLink').addEventListener('click', async e => {
+      e.preventDefault(); await logout(); window.location.href = 'loginPage.html';
+    });
+    render();
+  });
+
+  function render() {
+    $('currencyGrid').innerHTML = CUR.filter(c => c.code !== 'USD').slice(0, 8).map(c =>
+      '<div class="currency-card">' +
+      '<div class="currency-flag">' + c.flag + '</div>' +
+      '<div class="currency-code">' + c.code + '</div>' +
+      '<div class="currency-name">' + c.name + '</div>' +
+      '<div class="currency-rate">' + c.rate.toFixed(2) + '</div>' +
+      '<div class="currency-change">per 1 USD</div>' +
+      '</div>'
+    ).join('');
+
+    const opts = CUR.map(c => '<option value="' + c.code + '">' + c.code + ' — ' + c.name + '</option>').join('');
+    $('calcFrom').innerHTML = opts;
+    $('calcTo').innerHTML = opts;
+    $('calcFrom').value = 'USD';
+    $('calcTo').value = 'EUR';
+    convert();
+  }
+
+  const rateOf = code => (CUR.find(x => x.code === code) || {}).rate;
+
+  function convert() {
+    const amount = parseFloat($('calcAmount').value) || 0;
+    const from = $('calcFrom').value, to = $('calcTo').value;
+    const rFrom = rateOf(from), rTo = rateOf(to);
+    if (rFrom == null || rTo == null) return;
+    const result = (amount / rFrom) * rTo;
+    $('calcResult').textContent = result.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2}) + ' ' + to;
+    $('calcLabel').textContent = amount.toLocaleString() + ' ' + from + ' = ' + result.toLocaleString(undefined,{maximumFractionDigits:2}) + ' ' + to;
+  }
+
+  $('calcAmount').addEventListener('input', convert);
+  $('calcFrom').addEventListener('change', convert);
+  $('calcTo').addEventListener('change', convert);
+  $('calcSwap').addEventListener('click', () => {
+    const f = $('calcFrom').value; $('calcFrom').value = $('calcTo').value; $('calcTo').value = f; convert();
+  });
+</script>
+</body>
+</html>
